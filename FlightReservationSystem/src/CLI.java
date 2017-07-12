@@ -13,5 +13,11 @@ public class CLI {
 	// 10. Economy
 	
 	// switch()
+	
+	
+	void printMenu(){
+		
+		
+	}
 
 }
