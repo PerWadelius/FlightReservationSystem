@@ -7,13 +7,23 @@ public class Airplane10Seats extends Airplane {
 	final int totalNumberOfSeats = 10;
 	
 	// Should the Airplane object have control of available/free seats or just the maximum number of seats?
-	boolean[] businessClassSeats = new boolean[10];  // false means not booked seat, true means the seat is booked. 
-	boolean[] economyClassSeats = new boolean[10];
+	//boolean[] businessClassSeats = new boolean[10];  // false means not booked seat, true means the seat is booked. 
+	// boolean[] economyClassSeats = new boolean[10];
 	
-	HashMap<LocalDate, Flight> bookedDates = new HashMap<>();
+	Seat[] seats = new Seat[10];
+	
+	
+	// HashMap<LocalDate, Flight> bookedDates = new HashMap<>();
 	
 	public Airplane10Seats(){
-	
+		
+		for(int i = 0; i < 5; i++){
+			seats[i].type = SeatType.FIRSTCLASS;
+		}
+		
+		for(int i = 5; i < 10; i++){
+			seats[i].type = SeatType.ECONOMYClASS;
+		}
 		
 	}
 	
@@ -21,6 +31,8 @@ public class Airplane10Seats extends Airplane {
 		
 		
 	}
+	
+	
 	
 	
 	
