@@ -1,28 +1,39 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import models.reservations.Airplane;
+
 public class FlightReservationSystem {
 
-	List<Customer> allCustomers;
-	List<Flight> allFlights;
-	List<Food> allFoodReservations;
-	List<Airplane> allAirplanes;
+	List<Customer> allCustomers = new ArrayList<>();
+	List<Flight> allFlights = new ArrayList<>();
+	List<Food> allFoodReservations = new ArrayList<>();
+	List<Airplane> allAirplanes = new ArrayList<>();
+	List<Ticket> allTickets = new ArrayList<>();
 	
+	void removeCustomer(String name){
+		allCustomers.removeIf(s-> s.name.equals(name));
+	}
 	
 	void addAirplane(Airplane airplane){
+		allAirplanes.add(airplane);
+	}
+	
+	Customer addCustomer(String name){
+		
+		Customer c = new Customer(name); // Add contructor with only name as a parameter.
+		allCustomers.add(c);
+		return c;
 		
 	}
 	
-	void addCustomer(String name){
+	void createFlight(String source, String destination, LocalDate date, int airplaneID){
 		
-		
-	}
-	
-	void createFlight(String source, String destination, LocalDate date, Airplane airplane){
-		
+		allFlights.add(new Flight(allAirplanes.get(airplaneID), source, destination, date));
 		
 	}
 	
@@ -34,6 +45,8 @@ public class FlightReservationSystem {
 	void start(){
 		
 		CLI cli = new CLI();
+		
+		Customer currentCustomer; 
 		
 		boolean exitProgram = false;
 		
@@ -52,88 +65,97 @@ public class FlightReservationSystem {
 				 
 				
 				case "create flight":
-						itemList.addItem(ui.addNewItem());
+						
+						
+					//	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						String source, destination, date;
+						String airplaneID;
+						
+						System.out.println("Type in the source of the flight: ");
+						source = br.readLine();
+						
+						System.out.println("Type in the destination of the flight: ");
+						destination = br.readLine();
+						
+						System.out.println("Type in the date of the flight, format yy-mm-dd: ");
+						date = br.readLine();
+						
+						System.out.println("Type in the ID of the airplane: ");
+						airplaneID = br.readLine();
+					
+						createFlight(source, destination, date, airplaneID);
 						
 						break;
+						
 				case "add aeroplane": 
-						itemList.printToDoItemList();
-				
+						//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						String airPlaneName;
+						System.out.println("Type in a name of the airplan: ");
+						airPlaneName = br.readLine();
+						allAirplanes.add(new Airplane(airPlaneName));
 						break;
+						
 				case "new customer": 
-						System.out.println("Which Item do you want to mark as Done? ");
-						itemList.markItemDone(ui.readInputFromUser());
-				
+						
+						//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						String customerName;
+						System.out.println("Type in the name of the customer: ");
+						customerName = br.readLine();
+						currentCustomer = addCustomer(customerName);
+						
 						break;
 				case "buy ticket": 
-						System.out.println("Which Item do you want to remove from the list? ");
-						itemList.removeItem(ui.readInputFromUser());
+						//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						//String source, destination, date;
+						String flightNumber;  //, customerName;
+					
+						System.out.println("Type in the flight number: ");
+						flightNumber = br.readLine();
+						System.out.println("Type in the customer name: ");
+						customerName = br.readLine();
+							
+						buyTicket(currentCustomer, allFlights.get(Integer.parseInt(flightNumber)), null);
+						
+						
 						break;
 				case "reserve food": 
-						itemList.removeAllDoneItems();  
+						  
 					
 						break;
 				case "print all customers": 
-						System.out.println("Which Item do you search for? ");
-						try {
-								ui.printToDoItem(itemList.findByName(ui.readInputFromUser()));
-						} catch (ToDoItemNotFoundException e) {
-								System.out.println("Item not found");
-						}
+						allCustomers.forEach(s-> System.out.println(s));
 					
 						break;
 						
 				case "print all flights":
-						System.out.println("Which ID do you search for? ");
-						try {
-							sc = new Scanner(System.in);
-						    int i = sc.nextInt();
-							ui.printToDoItem(itemList.findByID(i));
-							
-						} 
-						catch (ToDoItemNotFoundException e) {
-							System.out.println("Item not found");
-						}
-						catch (NullPointerException e){
-							System.out.println("NullpointerException");
-						}
-				
-					break;
+						allFlights.forEach(s-> System.out.println(s));
+						break;
 					
 				case "print all aeroplanes": 
-						System.out.println("Which file do you want to save to? ");
-						itemList.writeToFile(ui.readInputFromUser());
+						allAirplanes.forEach(s-> System.out.println(s));
 						break;
 				
 				case "print statistics":
-						itemList.clearList();	
+						
 						break;
+						
 				case "economy summary":
-						System.out.println("Which file do you want to load from? ");
-						itemList.clearList();
-						itemList = itemList.loadFromFile(ui.readInputFromUser());
+						
 						break;
 						
 				case "delete ticket":
 				
-						System.out.println("Which Item do you want to edit? ");
-						String itemToEdit = ui.readInputFromUser();
-						System.out.println("What is the new name of the Item?");
-						String newName = ui.readInputFromUser();
-						try {
-							itemList.editItem(itemList.findByName(itemToEdit), newName);
-						} catch (ToDoItemNotFoundException e) {
-							System.out.println("Item not found in the To Do list");
-						}
-						break;
-						
-				case "delete customer": 
-						System.out.println("Which Item do you want to mark as not Done? ");
-						itemList.markItemNotDone(ui.readInputFromUser());
 					
 						break;
+						
+				case "Remove customer": 
+						System.out.println("Which customer do you want to remove? ");
+						customerName = br.readLine();
+						removeCustomer(customerName);
+						break;
+						
 				case "exit": 
 						exitProgram = true;
-						//itemList.writeToFile("ToDoItemList.xml");
 						System.out.println("Program will exit ...");
 						break;
 						
